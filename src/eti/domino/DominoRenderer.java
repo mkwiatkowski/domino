@@ -17,17 +17,18 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	   // TODO
 	}
 	
+	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+		gl.glDisable(GL10.GL_DITHER);
+
+		gl.glClearColor(.5f, .5f, .5f, 1);
+	}
+	
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
-		// TODO Auto-generated method stub
+		gl.glViewport(0, 0, w, h);
 	}
 
 	public void onDrawFrame(GL10 gl) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		// TODO Auto-generated method stub
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
 	}
 }
