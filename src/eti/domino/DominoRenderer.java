@@ -27,7 +27,11 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	}
 
 	public void touch(float x, float y) {
-		// TODO
+		piece.scaleTendency = "up";
+	}
+
+	public void release(float x, float y) {
+		piece.scaleTendency = "down";
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -61,7 +65,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	private void setupCamera(GL10 gl) {
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		GLU.gluLookAt(gl, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+		GLU.gluLookAt(gl, 0, 0, 5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 	}
 
 	private int loadTexture(GL10 gl, int resource) {
@@ -99,11 +103,13 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 class Object3D {
 	private int drawMode = GL10.GL_TRIANGLE_STRIP;
 	private int vertexCount;
+	private float scaleFactor = 1.0f;
+	public String scaleTendency = "down";
 	private FloatBuffer vertexBuffer;
 	private FloatBuffer textureBuffer;
 	private ShortBuffer indexBuffer;
 
-	public Object3D(float[] coords, float scaleFactor) {
+	public Object3D(float[] coords) {
 		vertexCount = coords.length / 3;
 		
 		vertexBuffer = GLHelpers.floatBuffer(vertexCount * 3);
@@ -112,13 +118,13 @@ class Object3D {
 
 		for (int i = 0; i < vertexCount; i++) {
 			for (int j = 0; j < 3; j++) {
-				vertexBuffer.put(coords[i * 3 + j] * scaleFactor);
+				vertexBuffer.put(coords[i * 3 + j] * 0.2f);
 			}
 		}
 
 		for (int i = 0; i < vertexCount; i++) {
 			for (int j = 0; j < 2; j++) {
-				textureBuffer.put(coords[i * 3 + j] * scaleFactor);
+				textureBuffer.put(coords[i * 3 + j] * 0.2f);
 			}
 		}
 
@@ -138,8 +144,18 @@ class Object3D {
         gl.glRotatef(30, 1.0f, 0, 0);
         gl.glRotatef(angle, 0, 1.0f, 0);
 	}
+	
+	private void scaleCorrection(GL10 gl) {
+		if (scaleTendency == "up" && scaleFactor < 2.0) {
+			scaleFactor += 0.1;
+		} else if (scaleTendency == "down" && scaleFactor > 1.0) {
+			scaleFactor -= 0.1;
+		}
+		gl.glScalef(scaleFactor, scaleFactor, scaleFactor);
+	}
 
 	public void draw(GL10 gl, int textureId) {
+		scaleCorrection(gl);
 		useTexture(gl, textureId);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -187,6 +203,6 @@ class DominoPiece extends Object3D {
 			-0.5f, 1, 0.1f
 			};
 	public DominoPiece() {
-		super(coords, 0.4f);
+		super(coords);
 	}
 }

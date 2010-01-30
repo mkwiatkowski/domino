@@ -23,7 +23,16 @@ public class OpenGLView extends GLSurfaceView {
 	public boolean onTouchEvent(final MotionEvent event) {
 		queueEvent(new Runnable() {
 			public void run() {
-				dominoRenderer.touch(event.getX(), event.getY());
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+				case MotionEvent.ACTION_MOVE:
+					dominoRenderer.touch(event.getX(), event.getY());
+					break;
+				case MotionEvent.ACTION_UP:
+					dominoRenderer.release(event.getX(), event.getY());
+					break;
+				}
+
 			}
 		});
 		return true;
