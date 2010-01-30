@@ -16,15 +16,16 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
+import android.os.SystemClock;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
 	private Context context;
-	private Object3D mTriangle;
+	private Object3D piece;
 	private int mTextureID;
 
 	public DominoRenderer(Context context) {
 		this.context = context;
-		mTriangle = new Rectangle();
+		piece = new DominoPiece();
 	}
 
 	public void touch(float x, float y) {
@@ -33,7 +34,6 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		gl.glDisable(GL10.GL_DITHER);
-		gl.glEnable(GL10.GL_CULL_FACE);
 
 		gl.glClearColor(.5f, .5f, .5f, 1);
 
@@ -52,7 +52,8 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 gl) {
 		clearScreen(gl);
 		setupCamera(gl);
-		mTriangle.draw(gl, mTextureID);
+		piece.rotate(gl, 0.5f);
+		piece.draw(gl, mTextureID);
 	}
 
 	private void clearScreen(GL10 gl) {
@@ -62,7 +63,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	private void setupCamera(GL10 gl) {
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		GLU.gluLookAt(gl, 0, 0, 5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+		GLU.gluLookAt(gl, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 	}
 
 	private int loadTexture(GL10 gl, int resource) {
@@ -104,8 +105,8 @@ class Object3D {
 	private FloatBuffer textureBuffer;
 	private ShortBuffer indexBuffer;
 
-	public Object3D(float[] coords, int vertexCount, float scaleFactor) {
-		this.vertexCount = vertexCount;
+	public Object3D(float[] coords, float scaleFactor) {
+		vertexCount = coords.length / 3;
 		
 		ByteBuffer vbb = ByteBuffer.allocateDirect(vertexCount * 3 * 4);
 		vbb.order(ByteOrder.nativeOrder());
@@ -139,6 +140,14 @@ class Object3D {
 		textureBuffer.position(0);
 		indexBuffer.position(0);
 	}
+	
+	public void rotate(GL10 gl, float frequency) {
+		long steps = (long)(1/frequency * 1000);
+        long stepno = SystemClock.uptimeMillis() % steps;
+        float angle = 360f/steps * ((int) stepno);
+        gl.glRotatef(30, 1.0f, 0, 0);
+        gl.glRotatef(angle, 0, 1.0f, 0);
+	}
 
 	public void draw(GL10 gl, int textureId) {
 		useTexture(gl, textureId);
@@ -161,26 +170,33 @@ class Object3D {
 	}
 }
 
-class Triangle extends Object3D {
+class DominoPiece extends Object3D {
 	private static float[] coords = {
-			-0.5f, -0.25f, 0,
-			0.5f, -0.25f, 0,
-			0.0f, 0.5f, 0 };
-	public Triangle() {
-		super(coords, 3, 1);
-	}
-}
-
-class Rectangle extends Object3D {
-	private static float[] coords = {
-			-0.5f, -1, 0,
-			0.5f, -1, 0,
-			-0.5f, 1, 0,
-			0.5f, 1, 0,
-			-0.5f, 1, -1,
-			0.5f, 1, -1
+			// front
+			-0.5f, -1, 0.1f,
+			0.5f, -1, 0.1f,
+			-0.5f, 1, 0.1f,
+			0.5f, 1, 0.1f,
+			// top
+			-0.5f, 1, -0.1f,
+			0.5f, 1, -0.1f,
+			// back
+			-0.5f, -1, -0.1f,
+			0.5f, -1, -0.1f,
+			// bottom
+			-0.5f, -1, 0.1f,
+			0.5f, -1, 0.1f,
+			// right
+			0.5f, 1, 0.1f,
+			0.5f, -1, -0.1f,
+			0.5f, 1, -0.1f,
+			// left
+			-0.5f, -1, -0.1f,
+			-0.5f, 1, -0.1f,
+			-0.5f, -1, 0.1f,
+			-0.5f, 1, 0.1f
 			};
-	public Rectangle() {
-		super(coords, 4, 0.2f);
+	public DominoPiece() {
+		super(coords, 0.4f);
 	}
 }
