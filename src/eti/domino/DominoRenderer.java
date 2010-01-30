@@ -37,11 +37,16 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 
 		gl.glClearColor(.5f, .5f, .5f, 1);
 
-		mTextureID = loadTexture(gl, R.drawable.icon);
+		mTextureID = loadTexture(gl, R.drawable.piece);
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
 		gl.glViewport(0, 0, w, h);
+		
+        float ratio = (float) w / h;
+        gl.glMatrixMode(GL10.GL_PROJECTION);
+        gl.glLoadIdentity();
+        gl.glFrustumf(-ratio, ratio, -1, 1, 3, 7);
 	}
 
 	public void onDrawFrame(GL10 gl) {
@@ -55,6 +60,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	}
 
 	private void setupCamera(GL10 gl) {
+		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		GLU.gluLookAt(gl, 0, 0, 5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 	}
@@ -98,7 +104,7 @@ class Object3D {
 	private FloatBuffer textureBuffer;
 	private ShortBuffer indexBuffer;
 
-	public Object3D(float[] coords, int vertexCount) {
+	public Object3D(float[] coords, int vertexCount, float scaleFactor) {
 		this.vertexCount = vertexCount;
 		
 		ByteBuffer vbb = ByteBuffer.allocateDirect(vertexCount * 3 * 4);
@@ -115,13 +121,13 @@ class Object3D {
 
 		for (int i = 0; i < vertexCount; i++) {
 			for (int j = 0; j < 3; j++) {
-				vertexBuffer.put(coords[i * 3 + j]);
+				vertexBuffer.put(coords[i * 3 + j] * scaleFactor);
 			}
 		}
 
 		for (int i = 0; i < vertexCount; i++) {
 			for (int j = 0; j < 2; j++) {
-				textureBuffer.put(coords[i * 3 + j] + 0.25f);
+				textureBuffer.put(coords[i * 3 + j] * scaleFactor);
 			}
 		}
 
@@ -157,23 +163,24 @@ class Object3D {
 
 class Triangle extends Object3D {
 	private static float[] coords = {
-			// X, Y, Z
 			-0.5f, -0.25f, 0,
 			0.5f, -0.25f, 0,
 			0.0f, 0.5f, 0 };
 	public Triangle() {
-		super(coords, 3);
+		super(coords, 3, 1);
 	}
 }
 
 class Rectangle extends Object3D {
 	private static float[] coords = {
-			// X, Y, Z
-			-0.5f, -0.25f, 0,
-			0.5f, -0.25f, 0,
-			-0.5f, 0.25f, 0,
-			0.5f, 0.25f, 0};
+			-0.5f, -1, 0,
+			0.5f, -1, 0,
+			-0.5f, 1, 0,
+			0.5f, 1, 0,
+			-0.5f, 1, -1,
+			0.5f, 1, -1
+			};
 	public Rectangle() {
-		super(coords, 4);
+		super(coords, 4, 0.2f);
 	}
 }
