@@ -2,8 +2,6 @@ package eti.domino;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -108,17 +106,9 @@ class Object3D {
 	public Object3D(float[] coords, float scaleFactor) {
 		vertexCount = coords.length / 3;
 		
-		ByteBuffer vbb = ByteBuffer.allocateDirect(vertexCount * 3 * 4);
-		vbb.order(ByteOrder.nativeOrder());
-		vertexBuffer = vbb.asFloatBuffer();
-
-		ByteBuffer tbb = ByteBuffer.allocateDirect(vertexCount * 2 * 4);
-		tbb.order(ByteOrder.nativeOrder());
-		textureBuffer = tbb.asFloatBuffer();
-
-		ByteBuffer ibb = ByteBuffer.allocateDirect(vertexCount * 2);
-		ibb.order(ByteOrder.nativeOrder());
-		indexBuffer = ibb.asShortBuffer();
+		vertexBuffer = GLHelpers.floatBuffer(vertexCount * 3);
+		textureBuffer = GLHelpers.floatBuffer(vertexCount * 2);
+		indexBuffer = GLHelpers.shortBuffer(vertexCount);
 
 		for (int i = 0; i < vertexCount; i++) {
 			for (int j = 0; j < 3; j++) {
