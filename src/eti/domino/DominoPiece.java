@@ -50,6 +50,7 @@ public class DominoPiece {
 	}
 
 	public void draw(GL10 gl) {
+		gl.glPushMatrix();
 		positionCorrection(gl);
 		scaleCorrection(gl);
 		rotationCorrection(gl);
@@ -57,6 +58,7 @@ public class DominoPiece {
 		for (TexturedTriangleStrip strip : strips) {
 			strip.draw(gl);
 		}
+		gl.glPopMatrix();
 	}
 
 	private void scaleCorrection(GL10 gl) {

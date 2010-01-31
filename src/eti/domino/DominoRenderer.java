@@ -2,6 +2,7 @@ package eti.domino;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -15,18 +16,18 @@ import android.opengl.GLUtils;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
 	private Context context;
-	private DominoPiece piece;
+	private ArrayList<DominoPiece> pieces;
 
 	public DominoRenderer(Context context) {
 		this.context = context;
 	}
 
 	public void touch(float x, float y) {
-		piece.scaleTendency = "up";
+		pieces.get(0).scaleTendency = "up";
 	}
 
 	public void release(float x, float y) {
-		piece.scaleTendency = "down";
+		pieces.get(0).scaleTendency = "down";
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -35,9 +36,12 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		gl.glClearColor(.5f, .5f, .5f, 1);
 
 		int textureId = loadTexture(gl, R.drawable.piece);
-		piece = new DominoPiece(textureId, new Position(0.2f, 0, 0));
-		piece.rotationFrequency = 0.5f;
-		piece.tilt = 15;
+		pieces = new ArrayList<DominoPiece>();
+		pieces.add(new DominoPiece(textureId, new Position(-0.3f, 0, 0)));
+		pieces.add(new DominoPiece(textureId, new Position(0, 0, 0)));
+		pieces.add(new DominoPiece(textureId, new Position(0.3f, 0, 0)));
+		pieces.get(0).rotationFrequency = 0.5f;
+		pieces.get(0).tilt = 15;
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
@@ -52,7 +56,9 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 gl) {
 		clearScreen(gl);
 		setupCamera(gl);
-		piece.draw(gl);
+		for (DominoPiece piece : pieces) {
+			piece.draw(gl);
+		}
 	}
 
 	private void clearScreen(GL10 gl) {
