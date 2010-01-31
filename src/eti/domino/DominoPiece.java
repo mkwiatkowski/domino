@@ -35,23 +35,30 @@ public class DominoPiece {
 	};
 	private float scaleFactor = 1.0f;
 	private ArrayList<TexturedTriangleStrip> strips; 
+	private Position position;
+
+	public int tilt = 0;
+	public float rotationFrequency = 0;
 	public String scaleTendency = "down";
 
-	public DominoPiece(int textureId) {
+	public DominoPiece(int textureId, Position position) {
+		this.position = position;
 		strips = new ArrayList<TexturedTriangleStrip>();
 		strips.add(new TexturedTriangleStrip(front_to_bottom_coords, textureId));
 		strips.add(new TexturedTriangleStrip(right_coords, textureId));
 		strips.add(new TexturedTriangleStrip(left_coords, textureId));
 	}
 
-	public void rotate(GL10 gl, float frequency) {
-		long steps = (long)(1/frequency * 1000);
-        long stepno = SystemClock.uptimeMillis() % steps;
-        float angle = 360f/steps * ((int) stepno);
-        gl.glRotatef(30, 1.0f, 0, 0);
-        gl.glRotatef(angle, 0, 1.0f, 0);
+	public void draw(GL10 gl) {
+		positionCorrection(gl);
+		scaleCorrection(gl);
+		rotationCorrection(gl);
+		tiltCorrection(gl);
+		for (TexturedTriangleStrip strip : strips) {
+			strip.draw(gl);
+		}
 	}
-	
+
 	private void scaleCorrection(GL10 gl) {
 		if (scaleTendency == "up" && scaleFactor < 2.0) {
 			scaleFactor += 0.1;
@@ -60,11 +67,21 @@ public class DominoPiece {
 		}
 		gl.glScalef(scaleFactor, scaleFactor, scaleFactor);
 	}
-
-	public void draw(GL10 gl) {
-		scaleCorrection(gl);
-		for (TexturedTriangleStrip strip : strips) {
-			strip.draw(gl);
+	
+	private void positionCorrection(GL10 gl) {
+		gl.glTranslatef(position.x, position.y, position.z);
+	}
+	
+	private void tiltCorrection(GL10 gl) {
+		gl.glRotatef(tilt, 1.0f, 0, 0);
+	}
+	
+	private void rotationCorrection(GL10 gl) {
+		if (rotationFrequency > 0) {
+			long steps = (long)(1/rotationFrequency * 1000);
+			long stepno = SystemClock.uptimeMillis() % steps;
+			float angle = 360f/steps * ((int) stepno);
+			gl.glRotatef(angle, 0, 1.0f, 0);
 		}
 	}
 }

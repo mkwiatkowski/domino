@@ -35,7 +35,9 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		gl.glClearColor(.5f, .5f, .5f, 1);
 
 		int textureId = loadTexture(gl, R.drawable.piece);
-		piece = new DominoPiece(textureId);
+		piece = new DominoPiece(textureId, new Position(0.2f, 0, 0));
+		piece.rotationFrequency = 0.5f;
+		piece.tilt = 15;
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
@@ -50,7 +52,6 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 gl) {
 		clearScreen(gl);
 		setupCamera(gl);
-		piece.rotate(gl, 0.5f);
 		piece.draw(gl);
 	}
 
