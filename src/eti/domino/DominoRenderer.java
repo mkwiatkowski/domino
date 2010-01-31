@@ -2,6 +2,7 @@ package eti.domino;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -98,7 +99,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 }
 
 class DominoPiece {
-	private static float[] coords = {
+	private static float[] front_to_bottom_coords = {
 		// front
 		-0.5f, -1, 0.1f,
 		0.5f, -1, 0.1f,
@@ -112,23 +113,29 @@ class DominoPiece {
 		0.5f, -1, -0.1f,
 		// bottom
 		-0.5f, -1, 0.1f,
+		0.5f, -1, 0.1f
+	};
+	private static float[] right_coords = {
 		0.5f, -1, 0.1f,
-		// right
-		0.5f, 1, 0.1f,
 		0.5f, -1, -0.1f,
-		0.5f, 1, -0.1f,
-		// left
-		-0.5f, -1, -0.1f,
-		-0.5f, 1, -0.1f,
+		0.5f, 1, 0.1f,
+		0.5f, 1, -0.1f
+	};
+	private static float[] left_coords = {
 		-0.5f, -1, 0.1f,
-		-0.5f, 1, 0.1f
+		-0.5f, -1, -0.1f,
+		-0.5f, 1, 0.1f,
+		-0.5f, 1, -0.1f
 	};
 	private float scaleFactor = 1.0f;
-	private TexturedTriangleStrip strip; 
+	private ArrayList<TexturedTriangleStrip> strips; 
 	public String scaleTendency = "down";
 
 	public DominoPiece(int textureId) {
-		strip = new TexturedTriangleStrip(coords, textureId);
+		strips = new ArrayList<TexturedTriangleStrip>();
+		strips.add(new TexturedTriangleStrip(front_to_bottom_coords, textureId));
+		strips.add(new TexturedTriangleStrip(right_coords, textureId));
+		strips.add(new TexturedTriangleStrip(left_coords, textureId));
 	}
 
 	public void rotate(GL10 gl, float frequency) {
@@ -150,6 +157,8 @@ class DominoPiece {
 
 	public void draw(GL10 gl) {
 		scaleCorrection(gl);
-		strip.draw(gl);
+		for (TexturedTriangleStrip strip : strips) {
+			strip.draw(gl);			
+		}
 	}
 }
