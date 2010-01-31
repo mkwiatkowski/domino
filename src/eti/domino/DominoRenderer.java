@@ -2,8 +2,6 @@ package eti.domino;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -18,12 +16,10 @@ import android.os.SystemClock;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
 	private Context context;
-	private Object3D piece;
-	private int mTextureID;
+	private DominoPiece piece;
 
 	public DominoRenderer(Context context) {
 		this.context = context;
-		piece = new DominoPiece();
 	}
 
 	public void touch(float x, float y) {
@@ -39,7 +35,8 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 
 		gl.glClearColor(.5f, .5f, .5f, 1);
 
-		mTextureID = loadTexture(gl, R.drawable.piece);
+		int textureId = loadTexture(gl, R.drawable.piece);
+		piece = new DominoPiece(textureId);
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
@@ -55,7 +52,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		clearScreen(gl);
 		setupCamera(gl);
 		piece.rotate(gl, 0.5f);
-		piece.draw(gl, mTextureID);
+		piece.draw(gl);
 	}
 
 	private void clearScreen(GL10 gl) {
@@ -100,43 +97,40 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	}
 }
 
-class Object3D {
-	private int drawMode = GL10.GL_TRIANGLE_STRIP;
-	private int vertexCount;
+class DominoPiece {
+	private static float[] coords = {
+		// front
+		-0.5f, -1, 0.1f,
+		0.5f, -1, 0.1f,
+		-0.5f, 1, 0.1f,
+		0.5f, 1, 0.1f,
+		// top
+		-0.5f, 1, -0.1f,
+		0.5f, 1, -0.1f,
+		// back
+		-0.5f, -1, -0.1f,
+		0.5f, -1, -0.1f,
+		// bottom
+		-0.5f, -1, 0.1f,
+		0.5f, -1, 0.1f,
+		// right
+		0.5f, 1, 0.1f,
+		0.5f, -1, -0.1f,
+		0.5f, 1, -0.1f,
+		// left
+		-0.5f, -1, -0.1f,
+		-0.5f, 1, -0.1f,
+		-0.5f, -1, 0.1f,
+		-0.5f, 1, 0.1f
+	};
 	private float scaleFactor = 1.0f;
+	private TexturedTriangleStrip strip; 
 	public String scaleTendency = "down";
-	private FloatBuffer vertexBuffer;
-	private FloatBuffer textureBuffer;
-	private ShortBuffer indexBuffer;
 
-	public Object3D(float[] coords) {
-		vertexCount = coords.length / 3;
-		
-		vertexBuffer = GLHelpers.floatBuffer(vertexCount * 3);
-		textureBuffer = GLHelpers.floatBuffer(vertexCount * 2);
-		indexBuffer = GLHelpers.shortBuffer(vertexCount);
-
-		for (int i = 0; i < vertexCount; i++) {
-			for (int j = 0; j < 3; j++) {
-				vertexBuffer.put(coords[i * 3 + j] * 0.2f);
-			}
-		}
-
-		for (int i = 0; i < vertexCount; i++) {
-			for (int j = 0; j < 2; j++) {
-				textureBuffer.put(coords[i * 3 + j] * 0.2f);
-			}
-		}
-
-		for (int i = 0; i < vertexCount; i++) {
-			indexBuffer.put((short) i);
-		}
-
-		vertexBuffer.position(0);
-		textureBuffer.position(0);
-		indexBuffer.position(0);
+	public DominoPiece(int textureId) {
+		strip = new TexturedTriangleStrip(coords, textureId);
 	}
-	
+
 	public void rotate(GL10 gl, float frequency) {
 		long steps = (long)(1/frequency * 1000);
         long stepno = SystemClock.uptimeMillis() % steps;
@@ -154,55 +148,8 @@ class Object3D {
 		gl.glScalef(scaleFactor, scaleFactor, scaleFactor);
 	}
 
-	public void draw(GL10 gl, int textureId) {
+	public void draw(GL10 gl) {
 		scaleCorrection(gl);
-		useTexture(gl, textureId);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
-		gl.glDrawElements(drawMode, vertexCount, GL10.GL_UNSIGNED_SHORT, indexBuffer);
-	}
-
-	private void useTexture(GL10 gl, int textureId) {
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-
-		gl.glActiveTexture(GL10.GL_TEXTURE0);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
-		gl.glTexParameterx(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
-		gl.glTexParameterx(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
-
-		gl.glFrontFace(GL10.GL_CCW);
-	}
-}
-
-class DominoPiece extends Object3D {
-	private static float[] coords = {
-			// front
-			-0.5f, -1, 0.1f,
-			0.5f, -1, 0.1f,
-			-0.5f, 1, 0.1f,
-			0.5f, 1, 0.1f,
-			// top
-			-0.5f, 1, -0.1f,
-			0.5f, 1, -0.1f,
-			// back
-			-0.5f, -1, -0.1f,
-			0.5f, -1, -0.1f,
-			// bottom
-			-0.5f, -1, 0.1f,
-			0.5f, -1, 0.1f,
-			// right
-			0.5f, 1, 0.1f,
-			0.5f, -1, -0.1f,
-			0.5f, 1, -0.1f,
-			// left
-			-0.5f, -1, -0.1f,
-			-0.5f, 1, -0.1f,
-			-0.5f, -1, 0.1f,
-			-0.5f, 1, 0.1f
-			};
-	public DominoPiece() {
-		super(coords);
+		strip.draw(gl);
 	}
 }
