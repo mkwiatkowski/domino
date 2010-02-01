@@ -58,12 +58,9 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 
 		int textureId = loadTexture(gl, R.drawable.piece);
 		pieces = new ArrayList<DominoPiece>();
-		pieces.add(new DominoPiece(textureId, new Position(-0.3f, 0, 0)));
-		pieces.add(new DominoPiece(textureId, new Position(0, 0, 0)));
-		pieces.add(new DominoPiece(textureId, new Position(0.3f, 0, 0)));
-		pieces.add(new DominoPiece(textureId, new Position(-1.15f, 0, 0)));
-		pieces.add(new DominoPiece(textureId, new Position(1.15f, 0, 0)));
-		pieces.add(new DominoPiece(textureId, new Position(0, 1.85f, 0)));
+		for (float x=-1.04f; x < 1.2f; x += 0.3f) {
+			pieces.add(new DominoPiece(textureId, new Position(x, -1.5f, 0)));
+		}
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
