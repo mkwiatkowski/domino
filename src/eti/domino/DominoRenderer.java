@@ -47,8 +47,12 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 
-	public void release(float x, float y) {
-		deactivateCurrentPiece();
+	public void release(float xOnScreen, float yOnScreen) {
+		float x = xOnScreenToCoord(xOnScreen);
+		float y = yOnScreenToCoord(yOnScreen);
+		if (currentPiece != null && !currentPiece.containsPoint(x, y)) {
+			deactivateCurrentPiece();
+		}
 	}
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
