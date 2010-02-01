@@ -35,12 +35,12 @@ public class DominoPiece {
 	};
 	private float maxScaleUp = 1.5f;
 	private float scaleFactor = 1.0f;
+	private String scaleTendency = "down";
 	private ArrayList<TexturedTriangleStrip> strips; 
 	private Position position;
-
-	public int tilt = 0;
-	public float rotationFrequency = 0;
-	public String scaleTendency = "down";
+	private float rotationFrequency = 0;
+	private long rotationStart;
+	private int tilt = 0;
 
 	public DominoPiece(int textureId, Position position) {
 		this.position = position;
@@ -68,10 +68,25 @@ public class DominoPiece {
 		return x > position.x-halfPieceWidth && x < position.x+halfPieceWidth
 			&& y > position.y-halfPieceHeight && y < position.y+halfPieceHeight;
 	}
+	
+	public void activate() {
+		scaleTendency = "up";
+	}
+	
+	public void deactivate() {
+		scaleTendency = "down";
+		rotationFrequency = 0;
+	}
 
 	private void scaleCorrection(GL10 gl) {
-		if (scaleTendency == "up" && scaleFactor < maxScaleUp) {
-			scaleFactor += 0.1;
+		if (scaleTendency == "up") {
+			if (scaleFactor < maxScaleUp) {
+				scaleFactor += 0.1;
+			} else if (rotationFrequency == 0) {
+				// Start rotating once it has been made bigger.
+				rotationFrequency = 0.5f;
+				rotationStart = SystemClock.uptimeMillis();
+			}
 		} else if (scaleTendency == "down" && scaleFactor > 1.0) {
 			scaleFactor -= 0.1;
 		}
@@ -89,7 +104,7 @@ public class DominoPiece {
 	private void rotationCorrection(GL10 gl) {
 		if (rotationFrequency > 0) {
 			long steps = (long)(1/rotationFrequency * 1000);
-			long stepno = SystemClock.uptimeMillis() % steps;
+			long stepno = (SystemClock.uptimeMillis() - rotationStart) % steps;
 			float angle = 360f/steps * ((int) stepno);
 			gl.glRotatef(angle, 0, 1.0f, 0);
 		}

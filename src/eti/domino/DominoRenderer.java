@@ -123,8 +123,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 
 	private void deactivateCurrentPiece() {
 		if (currentPiece != null) {
-			currentPiece.scaleTendency = "down";
-			currentPiece.rotationFrequency = 0;
+			currentPiece.deactivate();
 			currentPiece = null;
 		}
 	}
@@ -132,7 +131,6 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	private void activatePiece(DominoPiece piece) {
 		deactivateCurrentPiece();
 		currentPiece = piece;
-		currentPiece.scaleTendency = "up";
-		currentPiece.rotationFrequency = 0.5f;
+		currentPiece.activate();
 	}
 }
