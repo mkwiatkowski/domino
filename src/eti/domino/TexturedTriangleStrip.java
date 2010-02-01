@@ -2,6 +2,7 @@ package eti.domino;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+
 import javax.microedition.khronos.opengles.GL10;
 
 
@@ -53,12 +54,11 @@ public class TexturedTriangleStrip {
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
-		gl.glActiveTexture(GL10.GL_TEXTURE0);
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
+        gl.glTexParameterx(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_NEAREST);
+        gl.glTexParameterx(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
 		gl.glTexParameterx(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
 		gl.glTexParameterx(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
-
-		gl.glFrontFace(GL10.GL_CCW);
 	}
 }
 

@@ -5,13 +5,16 @@ import javax.microedition.khronos.opengles.GL10;
 import android.os.SystemClock;
 
 public class DominoPiece {
-	private static float[] front_to_bottom_coords = {
-		// front
+	private static float[] front_coords = {
 		-0.5f, -1, 0.1f,
 		0.5f, -1, 0.1f,
 		-0.5f, 1, 0.1f,
-		0.5f, 1, 0.1f,
+		0.5f, 1, 0.1f	
+	};
+	private static float[] top_to_bottom_coords = {
 		// top
+		-0.5f, 1, 0.1f,
+		0.5f, 1, 0.1f,
 		-0.5f, 1, -0.1f,
 		0.5f, 1, -0.1f,
 		// back
@@ -42,12 +45,13 @@ public class DominoPiece {
 	private long rotationStart;
 	private int tilt = 0;
 
-	public DominoPiece(int textureId, Position position) {
+	public DominoPiece(int frontTextureId, int backTextureId, Position position) {
 		this.position = position;
-		strips = new ArrayList<TexturedTriangleStrip>();
-		strips.add(new TexturedTriangleStrip(front_to_bottom_coords, textureId));
-		strips.add(new TexturedTriangleStrip(right_coords, textureId));
-		strips.add(new TexturedTriangleStrip(left_coords, textureId));
+        strips = new ArrayList<TexturedTriangleStrip>();
+        strips.add(new TexturedTriangleStrip(front_coords, frontTextureId));
+        strips.add(new TexturedTriangleStrip(top_to_bottom_coords, backTextureId));
+        strips.add(new TexturedTriangleStrip(right_coords, backTextureId));
+        strips.add(new TexturedTriangleStrip(left_coords, backTextureId));
 	}
 
 	public void draw(GL10 gl) {

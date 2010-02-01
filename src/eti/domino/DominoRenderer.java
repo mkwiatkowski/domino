@@ -57,13 +57,19 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		gl.glDisable(GL10.GL_DITHER);
+		gl.glEnable(GL10.GL_DEPTH_TEST);
+		gl.glDepthFunc(GL10.GL_LEQUAL);
+        gl.glEnable(GL10.GL_CULL_FACE);
+        gl.glCullFace(GL10.GL_BACK);
+		gl.glShadeModel(GL10.GL_SMOOTH);
 
 		gl.glClearColor(.5f, .5f, .5f, 1);
 
-		int textureId = loadTexture(gl, R.drawable.piece);
+		int frontTextureId = loadTexture(gl, R.drawable.piecefront);
+		int backTextureId = loadTexture(gl, R.drawable.pieceback);
 		pieces = new ArrayList<DominoPiece>();
 		for (float x=-1.04f; x < 1.2f; x += 0.3f) {
-			pieces.add(new DominoPiece(textureId, new Position(x, -1.5f, 0)));
+			pieces.add(new DominoPiece(frontTextureId, backTextureId, new Position(x, -1.5f, 0)));
 		}
 	}
 
