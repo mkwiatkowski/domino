@@ -11,31 +11,42 @@ public class DominoPiece {
 		-0.5f, 1, 0.1f,
 		0.5f, 1, 0.1f	
 	};
-	private static float[] top_to_bottom_coords = {
-		// top
+	private static float[] front_normal = {0,0,1};
+	private static float[] top_coords = {
 		-0.5f, 1, 0.1f,
 		0.5f, 1, 0.1f,
 		-0.5f, 1, -0.1f,
+		0.5f, 1, -0.1f
+	};
+	private static float[] top_normal = {0,1,0};
+	private static float[] back_coords = {
+		-0.5f, 1, -0.1f,
 		0.5f, 1, -0.1f,
-		// back
+		-0.5f, -1, -0.1f,
+		0.5f, -1, -0.1f
+	};
+	private static float[] back_normal = {0,0,-1};
+	private static float[] bottom_coords = {
 		-0.5f, -1, -0.1f,
 		0.5f, -1, -0.1f,
-		// bottom
 		-0.5f, -1, 0.1f,
 		0.5f, -1, 0.1f
 	};
+	private static float[] bottom_normal = {0,-1,0};
 	private static float[] right_coords = {
 		0.5f, -1, 0.1f,
 		0.5f, -1, -0.1f,
 		0.5f, 1, 0.1f,
 		0.5f, 1, -0.1f
 	};
+	private static float[] right_normal = {1,0,0};
 	private static float[] left_coords = {
 		-0.5f, -1, 0.1f,
 		-0.5f, -1, -0.1f,
 		-0.5f, 1, 0.1f,
 		-0.5f, 1, -0.1f
 	};
+	private static float[] left_normal = {-1,0,0};
 	private float maxScaleUp = 1.5f;
 	private float scaleFactor = 1.0f;
 	private String scaleTendency = "down";
@@ -48,10 +59,12 @@ public class DominoPiece {
 	public DominoPiece(int frontTextureId, int backTextureId, Position position) {
 		this.position = position;
         strips = new ArrayList<TexturedTriangleStrip>();
-        strips.add(new TexturedTriangleStrip(front_coords, frontTextureId));
-        strips.add(new TexturedTriangleStrip(top_to_bottom_coords, backTextureId));
-        strips.add(new TexturedTriangleStrip(right_coords, backTextureId));
-        strips.add(new TexturedTriangleStrip(left_coords, backTextureId));
+        strips.add(new TexturedTriangleStrip(front_coords, front_normal, frontTextureId));
+        strips.add(new TexturedTriangleStrip(top_coords, top_normal, backTextureId));
+        strips.add(new TexturedTriangleStrip(back_coords, back_normal, backTextureId));
+        strips.add(new TexturedTriangleStrip(bottom_coords, bottom_normal, backTextureId));
+        strips.add(new TexturedTriangleStrip(right_coords, right_normal, backTextureId));
+        strips.add(new TexturedTriangleStrip(left_coords, left_normal, backTextureId));
 	}
 
 	public void draw(GL10 gl) {
