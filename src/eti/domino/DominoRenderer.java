@@ -13,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
-import android.util.Log;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
 	private Context context;

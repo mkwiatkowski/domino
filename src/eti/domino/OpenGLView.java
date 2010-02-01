@@ -2,6 +2,7 @@ package eti.domino;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.os.SystemClock;
 import android.view.MotionEvent;
 
 public class OpenGLView extends GLSurfaceView {
@@ -32,9 +33,10 @@ public class OpenGLView extends GLSurfaceView {
 					dominoRenderer.release(event.getX(), event.getY());
 					break;
 				}
-
 			}
 		});
+		// Sleeping a bit, so touch events don't flood the renderer thread.
+		SystemClock.sleep(16);
 		return true;
 	}
 }
