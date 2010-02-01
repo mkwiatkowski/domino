@@ -33,6 +33,7 @@ public class DominoPiece {
 		-0.5f, 1, 0.1f,
 		-0.5f, 1, -0.1f
 	};
+	private float maxScaleUp = 1.5f;
 	private float scaleFactor = 1.0f;
 	private ArrayList<TexturedTriangleStrip> strips; 
 	private Position position;
@@ -60,24 +61,31 @@ public class DominoPiece {
 		}
 		gl.glPopMatrix();
 	}
+	
+	public boolean containsPoint(float x, float y) {
+		final float halfPieceWidth = 0.12f;
+		final float halfPieceHeight = 0.24f;
+		return x > position.x-halfPieceWidth && x < position.x+halfPieceWidth
+			&& y > position.y-halfPieceHeight && y < position.y+halfPieceHeight;
+	}
 
 	private void scaleCorrection(GL10 gl) {
-		if (scaleTendency == "up" && scaleFactor < 2.0) {
+		if (scaleTendency == "up" && scaleFactor < maxScaleUp) {
 			scaleFactor += 0.1;
 		} else if (scaleTendency == "down" && scaleFactor > 1.0) {
 			scaleFactor -= 0.1;
 		}
 		gl.glScalef(scaleFactor, scaleFactor, scaleFactor);
 	}
-	
+
 	private void positionCorrection(GL10 gl) {
 		gl.glTranslatef(position.x, position.y, position.z);
 	}
-	
+
 	private void tiltCorrection(GL10 gl) {
 		gl.glRotatef(tilt, 1.0f, 0, 0);
 	}
-	
+
 	private void rotationCorrection(GL10 gl) {
 		if (rotationFrequency > 0) {
 			long steps = (long)(1/rotationFrequency * 1000);

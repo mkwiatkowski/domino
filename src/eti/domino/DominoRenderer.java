@@ -13,23 +13,45 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
+import android.util.Log;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
 	private Context context;
 	private ArrayList<DominoPiece> pieces;
+	private DominoPiece currentPiece;
 
 	public DominoRenderer(Context context) {
 		this.context = context;
 	}
 
-	public void touch(float x, float y) {
-		pieces.get(0).scaleTendency = "up";
+	private float xOnScreenToCoord(float x) {
+		final float leftEdgeCoord = -1.35f;
+		final float rightEdgeCoord = 1.35f;
+		final float screenWidth = 320;
+		return (x / screenWidth) * (rightEdgeCoord - leftEdgeCoord) + leftEdgeCoord;
+	}
+
+	private float yOnScreenToCoord(float y) {
+		final float topEdgeCoord = 1.85f;
+		final float bottomEdgeCoord = -1.85f;
+		final float screenHeight = 430;
+		return -1 * ((y / screenHeight) - 1) * (topEdgeCoord - bottomEdgeCoord) + bottomEdgeCoord;
+	}
+
+	public void touch(float xOnScreen, float yOnScreen) {
+		float x = xOnScreenToCoord(xOnScreen);
+		float y = yOnScreenToCoord(yOnScreen);
+		for (DominoPiece piece : pieces) {
+			if (piece.containsPoint(x, y)) {
+				activatePiece(piece);
+			}
+		}
 	}
 
 	public void release(float x, float y) {
-		pieces.get(0).scaleTendency = "down";
+		deactivateCurrentPiece();
 	}
-
+	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		gl.glDisable(GL10.GL_DITHER);
 
@@ -40,8 +62,9 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		pieces.add(new DominoPiece(textureId, new Position(-0.3f, 0, 0)));
 		pieces.add(new DominoPiece(textureId, new Position(0, 0, 0)));
 		pieces.add(new DominoPiece(textureId, new Position(0.3f, 0, 0)));
-		pieces.get(0).rotationFrequency = 0.5f;
-		pieces.get(0).tilt = 15;
+		pieces.add(new DominoPiece(textureId, new Position(-1.15f, 0, 0)));
+		pieces.add(new DominoPiece(textureId, new Position(1.15f, 0, 0)));
+		pieces.add(new DominoPiece(textureId, new Position(0, 1.85f, 0)));
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
@@ -100,5 +123,20 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		bitmap.recycle();
 
 		return textureId;
+	}
+
+	private void deactivateCurrentPiece() {
+		if (currentPiece != null) {
+			currentPiece.scaleTendency = "down";
+			currentPiece.rotationFrequency = 0;
+			currentPiece = null;
+		}
+	}
+	
+	private void activatePiece(DominoPiece piece) {
+		deactivateCurrentPiece();
+		currentPiece = piece;
+		currentPiece.scaleTendency = "up";
+		currentPiece.rotationFrequency = 0.5f;
 	}
 }
