@@ -1,18 +1,13 @@
 package eti.domino;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.opengl.GLUtils;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
 	private Context context;
@@ -59,17 +54,12 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		gl.glDisable(GL10.GL_DITHER);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL10.GL_LEQUAL);
-        gl.glEnable(GL10.GL_CULL_FACE);
-        gl.glCullFace(GL10.GL_BACK);
-		gl.glShadeModel(GL10.GL_SMOOTH);
 
 		gl.glClearColor(.5f, .5f, .5f, 1);
 
-		int frontTextureId = loadTexture(gl, R.drawable.piecefront);
-		int backTextureId = loadTexture(gl, R.drawable.pieceback);
 		pieces = new ArrayList<DominoPiece>();
 		for (float x=-1.04f; x < 1.2f; x += 0.3f) {
-			pieces.add(new DominoPiece(frontTextureId, backTextureId, new Position(x, -1.5f, 0)));
+			pieces.add(new DominoPiece(new Position(x, -1.5f, 0)));
 		}
 	}
 
@@ -98,37 +88,6 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		GLU.gluLookAt(gl, 0, 0, 5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-	}
-
-	private int loadTexture(GL10 gl, int resource) {
-		int[] textures = new int[1];
-		gl.glGenTextures(1, textures, 0);
-
-		int textureId = textures[0];
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
-
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
-
-		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_REPLACE);
-
-		InputStream is = context.getResources().openRawResource(resource);
-		Bitmap bitmap;
-		try {
-			bitmap = BitmapFactory.decodeStream(is);
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				// Ignore.
-			}
-		}
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-		bitmap.recycle();
-
-		return textureId;
 	}
 
 	private void deactivateCurrentPiece() {
