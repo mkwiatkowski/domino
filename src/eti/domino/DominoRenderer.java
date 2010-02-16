@@ -1,6 +1,7 @@
 package eti.domino;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -59,8 +60,15 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 
 		pieces = new ArrayList<DominoPiece>();
 		for (float x=-1.04f; x < 1.2f; x += 0.3f) {
-			pieces.add(new DominoPiece(new Position(x, -1.5f, 0)));
+			pieces.add(randomPiece(new Position(x, -1.4f, 0)));
 		}
+	}
+
+	static private DominoPiece randomPiece(Position position) {
+		Random generator = new Random();
+		int top = generator.nextInt(7);
+		int bottom = generator.nextInt(7);
+		return new DominoPiece(position, top, bottom);
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {

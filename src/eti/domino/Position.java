@@ -14,4 +14,8 @@ public class Position {
 	public Position higher(float by) {
 		return new Position(this.x, this.y + by, this.z);
 	}
+	
+	public Position shifted(float by) {
+		return new Position(this.x + by, this.y, this.z);
+	}
 }
