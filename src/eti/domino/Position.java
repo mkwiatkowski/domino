@@ -10,4 +10,8 @@ public class Position {
 		this.y = y;
 		this.z = z;
 	}
+	
+	public Position higher(float by) {
+		return new Position(this.x, this.y + by, this.z);
+	}
 }

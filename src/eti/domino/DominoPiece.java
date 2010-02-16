@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import javax.microedition.khronos.opengles.GL10;
 
 public class DominoPiece {
+	final private float halfPieceWidth = 0.12f;
+	final private float halfPieceHeight = 0.24f;
+
 	private Position position;
 	private ArrayList<Object3D> objects; 
 	
@@ -12,7 +15,8 @@ public class DominoPiece {
 		this.position = position;		
 		objects = new ArrayList<Object3D>();
         objects.add(new Cuboid(position));
-        objects.add(new Circle(position));
+        objects.add(new Bar(position));
+        objects.add(new Circle(position.higher(0.125f)));
 	}
 	
 	public void draw(GL10 gl) {
@@ -22,8 +26,6 @@ public class DominoPiece {
 	}
 	
 	public boolean containsPoint(float x, float y) {
-		final float halfPieceWidth = 0.12f;
-		final float halfPieceHeight = 0.24f;
 		return x > position.x-halfPieceWidth && x < position.x+halfPieceWidth
 			&& y > position.y-halfPieceHeight && y < position.y+halfPieceHeight;
 	}
