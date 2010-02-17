@@ -18,8 +18,8 @@ public class DominoPiece {
 		objects = new ArrayList<Object3D>();
         objects.add(cuboid);
         objects.add(new Bar(new RelativePosition(cuboid)));
-        addDots(cuboid, top_dots, 0.12f);
-        addDots(cuboid, bottom_dots, -0.12f);
+        addDots(cuboid, top_dots, 0.11f);
+        addDots(cuboid, bottom_dots, -0.11f);
 	}
 	
 	public void draw(GL10 gl) {

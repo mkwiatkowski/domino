@@ -4,12 +4,12 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class Circle extends Object3D {
 	private static float[] coords = {
-		0, 0, 0,
-		0, 0.13f, 0,
-		0.13f, 0, 0,
-		0, -0.13f, 0,
-		-0.13f, 0, 0,
-		0, 0.13f, 0
+		0, 0, -0.1f,
+		0, 0.13f, -0.1f,
+		0.13f, 0, -0.1f,
+		0, -0.13f, -0.1f,
+		-0.13f, 0, -0.1f,
+		0, 0.13f, -0.1f
 	};
 	private ColorTriangles triangles;
 
