@@ -6,8 +6,11 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.util.Log;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
+	public static final String TAG = "Domino";
+
 	@SuppressWarnings("unused")
 	private Context context;
 
@@ -74,9 +77,11 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		if (currentPiece != null) {
 			for (DominoPiece piece : table.getTablePieces()) {
 				if (piece.containsPoint(x, y)) {
+					tableStatus();
 					if (table.putPieceOnTable(currentPiece, piece)) {
 						deactivateCurrentPiece(false);
 						gameStep();
+						tableStatus();
 						return;
 					}
 				}
@@ -153,6 +158,13 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 			currentPiece = piece;
 			currentPieceOldPosition = currentPiece.getPositionCopy();
 			currentPiece.activate();
+		}
+	}
+	
+	private void tableStatus() {
+		Log.d(DominoRenderer.TAG, "PIECES ON TABLE");
+		for (DominoPiece piece : table.getTablePieces()) {
+			Log.d(DominoRenderer.TAG, piece.toString());		
 		}
 	}
 }

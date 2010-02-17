@@ -92,7 +92,7 @@ public class DominoPiece {
 	}
 
 	public boolean fitsWith(int dots) {
-		return (this.topDots == dots && this.topFree) || (this.bottomDots == dots && this.bottomFree);
+		return this.topDots == dots || this.bottomDots == dots;
 	}
 
 	private void recreateDots() {
@@ -149,5 +149,9 @@ public class DominoPiece {
 		objects.add(new Circle(new RelativePosition(object, dotStep, offset + dotStep, 0)));
 		objects.add(new Circle(new RelativePosition(object, -dotStep, offset - dotStep, 0)));
 		objects.add(new Circle(new RelativePosition(object, dotStep, offset - dotStep, 0)));
+	}
+	
+	public String toString() {
+		return "["+topDots+(topFree ? "*" : "")+" / "+bottomDots+(bottomFree ? "*" : "")+"]";
 	}
 }

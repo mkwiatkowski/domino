@@ -56,7 +56,7 @@ public class Table {
 
 	// Return true when the piece has been successfully placed on table.
 	public boolean putPieceOnTable(DominoPiece piece, DominoPiece adjacentPiece) {
-		if (piece.fitsWith(adjacentPiece.topDots)) {
+		if (piece.fitsWith(adjacentPiece.topDots) && adjacentPiece.topFree) {
 			movePieceToTable(piece);
 			piece.setPosition(adjacentPiece.getPositionOnePieceHigher());
 			if (piece.topDots == adjacentPiece.topDots) {
@@ -65,7 +65,7 @@ public class Table {
 			adjacentPiece.topFree = false;
 			piece.bottomFree = false;
 			return true;
-		} else if (piece.fitsWith(adjacentPiece.bottomDots)) {
+		} else if (piece.fitsWith(adjacentPiece.bottomDots) && adjacentPiece.bottomFree) {
 			movePieceToTable(piece);
 			piece.setPosition(adjacentPiece.getPositionOnePieceLower());
 			if (piece.bottomDots == adjacentPiece.bottomDots) {
