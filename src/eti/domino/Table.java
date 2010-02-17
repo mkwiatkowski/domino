@@ -56,6 +56,13 @@ public class Table {
 					piece.flip();
 				}
 				return true;
+			} else if (piece.fitsWith(adjacentPiece.bottomDots)) {
+				movePieceToTable(piece);
+				piece.setPosition(adjacentPiece.getPositionOnePieceLower());
+				if (piece.bottomDots == adjacentPiece.bottomDots) {
+					piece.flip();
+				}
+				return true;				
 			}
 		}
 		return false;

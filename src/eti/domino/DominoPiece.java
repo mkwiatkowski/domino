@@ -8,6 +8,7 @@ public class DominoPiece {
 	final private float halfPieceWidth = 0.12f;
 	final private float halfPieceHeight = 0.24f;
 	final private float dotStep = halfPieceWidth / 2.2f;
+	final private float tablePieceDistance = 0.43f;
 
 	public int topDots, bottomDots;
 	private Position position;
@@ -26,9 +27,13 @@ public class DominoPiece {
 	}
 
 	public Position getPositionOnePieceHigher() {
-		return position.higher(halfPieceHeight * 2);
+		return position.higher(tablePieceDistance);
 	}
-	
+
+	public Position getPositionOnePieceLower() {
+		return position.higher(-tablePieceDistance);
+	}
+
 	public Position getPositionCopy() {
 		return new Position(position);
 	}
