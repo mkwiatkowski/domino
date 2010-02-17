@@ -52,7 +52,15 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		float x = xOnScreenToCoord(xOnScreen);
 		float y = yOnScreenToCoord(yOnScreen);
 		if (currentPiece != null) {
-			deactivateCurrentPiece();
+			for (DominoPiece piece : table.getTablePieces()) {
+				if (piece.containsPoint(x, y)) {
+					if (table.putPieceOnTable(currentPiece, piece)) {
+						deactivateCurrentPiece(false);
+						return;
+					}
+				}
+			}
+			deactivateCurrentPiece(true);
 		}
 	}
 	
@@ -109,18 +117,22 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 
-	private void deactivateCurrentPiece() {
+	private void deactivateCurrentPiece(boolean resetPosition) {
 		if (currentPiece != null) {
-			currentPiece.setPosition(currentPieceOldPosition);
+			if (resetPosition) {
+				currentPiece.setPosition(currentPieceOldPosition);
+			}
 			currentPiece.deactivate();
 			currentPiece = null;
+			currentPieceOldPosition = null;
 		}
 	}
 
 	private void activatePiece(DominoPiece piece) {
-		deactivateCurrentPiece();
-		currentPiece = piece;
-		currentPieceOldPosition = currentPiece.getPositionCopy();
-		currentPiece.activate();
+		if (currentPiece == null) {
+			currentPiece = piece;
+			currentPieceOldPosition = currentPiece.getPositionCopy();
+			currentPiece.activate();
+		}
 	}
 }
