@@ -48,26 +48,24 @@ public class Table {
 
 	// Return true when the piece has been successfully placed on table.
 	public boolean putPieceOnTable(DominoPiece piece, DominoPiece adjacentPiece) {
-		if (tablePieces.size() == 1) {
-			if (piece.fitsWith(adjacentPiece.topDots)) {
-				movePieceToTable(piece);
-				piece.setPosition(adjacentPiece.getPositionOnePieceHigher());
-				if (piece.topDots == adjacentPiece.topDots) {
-					piece.flip();
-				}
-				adjacentPiece.topFree = false;
-				piece.bottomFree = false;
-				return true;
-			} else if (piece.fitsWith(adjacentPiece.bottomDots)) {
-				movePieceToTable(piece);
-				piece.setPosition(adjacentPiece.getPositionOnePieceLower());
-				if (piece.bottomDots == adjacentPiece.bottomDots) {
-					piece.flip();
-				}
-				adjacentPiece.bottomFree = false;
-				piece.topFree = false;
-				return true;				
+		if (piece.fitsWith(adjacentPiece.topDots)) {
+			movePieceToTable(piece);
+			piece.setPosition(adjacentPiece.getPositionOnePieceHigher());
+			if (piece.topDots == adjacentPiece.topDots) {
+				piece.flip();
 			}
+			adjacentPiece.topFree = false;
+			piece.bottomFree = false;
+			return true;
+		} else if (piece.fitsWith(adjacentPiece.bottomDots)) {
+			movePieceToTable(piece);
+			piece.setPosition(adjacentPiece.getPositionOnePieceLower());
+			if (piece.bottomDots == adjacentPiece.bottomDots) {
+				piece.flip();
+			}
+			adjacentPiece.bottomFree = false;
+			piece.topFree = false;
+			return true;				
 		}
 		return false;
 	}
