@@ -73,7 +73,7 @@ public class Table {
 			}
 			adjacentPiece.bottomFree = false;
 			piece.topFree = false;
-			return true;				
+			return true;
 		}
 		return false;
 	}
@@ -90,6 +90,20 @@ public class Table {
 		DominoPiece piece = bankPieces.remove(idx);
 		computerPlayerPieces.add(piece);
 		return piece;
+	}
+	
+	public void drawPiecesForPlayerIfNeeded() throws NoPiecesLeftException {
+		for (DominoPiece humanPiece : humanPlayerPieces) {
+			for (DominoPiece tablePiece : tablePieces) {
+				if (humanPiece.fitsWith(tablePiece.topDots) || humanPiece.fitsWith(tablePiece.bottomDots)) {
+					return;
+				}
+			}
+		}
+		// We have to draw, get a random piece and see if the player needs
+		// another one.
+		getRandomPieceForHuman();
+		drawPiecesForPlayerIfNeeded();
 	}
 
 	private int getRandomPieceIndex() throws NoPiecesLeftException {

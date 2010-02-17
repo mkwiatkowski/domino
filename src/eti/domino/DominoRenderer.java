@@ -50,6 +50,23 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 			currentPiece.setPosition(x, y, 0);
 		}
 	}
+	
+	public void gameStep() {
+		// TODO: check if that was the last one.
+
+		// The piece has been placed by the user, now
+		// it's the computer turn.
+		computerPlayer.move(table);
+
+		// Check if the player has a move, otherwise draw
+		// pieces for him.
+		try {
+			table.drawPiecesForPlayerIfNeeded();
+		} catch (NoPiecesLeftException e) {
+			// No moves for the player, let the computer play.
+			gameStep();
+		}
+	}
 
 	public void release(float xOnScreen, float yOnScreen) {
 		float x = xOnScreenToCoord(xOnScreen);
@@ -59,11 +76,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 				if (piece.containsPoint(x, y)) {
 					if (table.putPieceOnTable(currentPiece, piece)) {
 						deactivateCurrentPiece(false);
-						// TODO: check if that was the last one.
-
-						// The piece has been placed by the user, now
-						// it's the computer turn.
-						computerPlayer.move(table);
+						gameStep();
 						return;
 					}
 				}
@@ -76,7 +89,6 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		gl.glDisable(GL10.GL_DITHER);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL10.GL_LEQUAL);
-
 		gl.glClearColor(.5f, .5f, .5f, 1);
 	}
 
