@@ -55,11 +55,21 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	}
 	
 	public void gameStep() {
-		// TODO: check if that was the last one.
+		if (table.computerHasWon()) {
+			// TODO show "lost" screen
+			Log.d(DominoRenderer.TAG, "You have lost!");
+		} else if (table.humanHasWon()) {
+			// TODO show "won" screen
+			Log.d(DominoRenderer.TAG, "You have won!");
+		}
 
 		// The piece has been placed by the user, now
 		// it's the computer turn.
-		computerPlayer.move(table);
+		boolean computerMoved = computerPlayer.move(table);
+		
+		if (!computerMoved && table.isTieWithNoComputerMoves()) {
+			Log.d(DominoRenderer.TAG, "Tie!");
+		}
 
 		// Check if the player has a move, otherwise draw
 		// pieces for him.

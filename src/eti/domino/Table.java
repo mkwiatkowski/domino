@@ -93,17 +93,23 @@ public class Table {
 	}
 	
 	public void drawPiecesForPlayerIfNeeded() throws NoPiecesLeftException {
-		for (DominoPiece humanPiece : humanPlayerPieces) {
-			for (DominoPiece tablePiece : tablePieces) {
-				if (humanPiece.fitsWith(tablePiece.topDots) || humanPiece.fitsWith(tablePiece.bottomDots)) {
-					return;
-				}
-			}
+		while (!humanHasMoves()) {
+			// We have to draw, so get a random piece and see if the player
+			// needs another one.
+			getRandomPieceForHuman();
 		}
-		// We have to draw, get a random piece and see if the player needs
-		// another one.
-		getRandomPieceForHuman();
-		drawPiecesForPlayerIfNeeded();
+	}
+	
+	public boolean computerHasWon() {
+		return computerPlayerPieces.isEmpty();
+	}
+	
+	public boolean humanHasWon() {
+		return humanPlayerPieces.isEmpty();
+	}
+	
+	public boolean isTieWithNoComputerMoves() {
+		return bankPieces.isEmpty() && !humanHasMoves();
 	}
 
 	private int getRandomPieceIndex() throws NoPiecesLeftException {
@@ -122,4 +128,16 @@ public class Table {
 		}
 		tablePieces.add(piece);
 	}
+
+	private boolean humanHasMoves() {
+		for (DominoPiece humanPiece : humanPlayerPieces) {
+			for (DominoPiece tablePiece : tablePieces) {
+				if ((humanPiece.fitsWith(tablePiece.topDots) && tablePiece.topFree)
+						|| (humanPiece.fitsWith(tablePiece.bottomDots) && tablePiece.bottomFree)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}	
 }
