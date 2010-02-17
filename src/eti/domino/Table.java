@@ -39,11 +39,23 @@ public class Table {
 		}
 		putRandomPieceOnTable();
 	}
-	
+
 	public void putRandomPieceOnTable() {
 		int idx = getRandomPieceIndex();
 		DominoPiece piece = bankPieces.remove(idx);
 		tablePieces.add(piece);
+	}
+
+	// Return true when the piece has been successfully placed on table.
+	public boolean putPieceOnTable(DominoPiece piece, DominoPiece adjacentPiece) {
+		if (tablePieces.size() == 1) {
+			if (piece.fitsWith(adjacentPiece.topDots)) {
+				movePieceToTable(piece);
+				piece.setPosition(adjacentPiece.getPositionOnePieceHigher());
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public DominoPiece getRandomPieceForHuman() {
@@ -64,5 +76,14 @@ public class Table {
 		// TODO: check if there are any pieces left first!
 		Random generator = new Random();
 		return generator.nextInt(bankPieces.size());
+	}
+
+	private void movePieceToTable(DominoPiece piece) {
+		if (humanPlayerPieces.contains(piece)) {
+			humanPlayerPieces.remove(piece);
+		} else if (computerPlayerPieces.contains(piece)) {
+			computerPlayerPieces.remove(piece);
+		}
+		tablePieces.add(piece);
 	}
 }

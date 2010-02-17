@@ -9,7 +9,7 @@ public class DominoPiece {
 	final private float halfPieceHeight = 0.24f;
 	final private float dotStep = halfPieceWidth / 2.2f;
 
-	private int topDots, bottomDots;
+	public int topDots, bottomDots;
 	private Position position;
 	private ArrayList<Object3D> objects; 
 
@@ -25,11 +25,19 @@ public class DominoPiece {
         addDots(cuboid, topDots, 0.11f);
         addDots(cuboid, bottomDots, -0.11f);
 	}
-
+	
+	public Position getPositionOnePieceHigher() {
+		return position.higher(halfPieceHeight * 2);
+	}
+	
 	public void setPosition(float x, float y, float z) {
 		position.setX(x);
 		position.setY(y);
 		position.setZ(z);
+	}
+	
+	public void setPosition(Position position) {
+		setPosition(position.getX(), position.getY(), position.getZ());
 	}
 	
 	public void draw(GL10 gl) {
@@ -60,6 +68,10 @@ public class DominoPiece {
 		for (Object3D object : objects) {
 			object.setTilt(tilt);
 		}		
+	}
+
+	public boolean fitsWith(int dots) {
+		return this.topDots == dots || this.bottomDots == dots;
 	}
 
 	private void addDots(Object3D object, int number, float offset) {

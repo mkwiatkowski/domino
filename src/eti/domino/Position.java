@@ -34,4 +34,13 @@ public class Position {
 	public void setZ(float z) {
 		this.z = z;
 	}
+
+	public Position higher(float by) {
+		return new Position(this.getX(), this.getY() + by, this.getZ());
+	}
+
+	public Position shifted(float by) {
+		return new Position(this.getX() + by, this.getY(), this.getZ());
+	}
+
 }
