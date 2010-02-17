@@ -10,6 +10,7 @@ import android.util.Log;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
 	public static final String TAG = "Domino";
+	public static final float tableScale = 0.65f;
 
 	@SuppressWarnings("unused")
 	private Context context;
@@ -45,7 +46,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		float y = yOnScreenToCoord(yOnScreen);
 		if (currentPiece == null) {
 			for (DominoPiece piece : table.getHumanPlayerPieces()) {
-				if (piece.containsPoint(x, y)) {
+				if (piece.containsPointOnPlayerPieces(x, y)) {
 					activatePiece(piece);
 				}
 			}
@@ -59,7 +60,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		float y = yOnScreenToCoord(yOnScreen);
 		if (currentPiece != null) {
 			for (DominoPiece piece : table.getTablePieces()) {
-				if (piece.containsPoint(x, y)) {
+				if (piece.containsPointOnTable(x, y)) {
 					tableStatus();
 					if (table.putPieceOnTable(currentPiece, piece)) {
 						deactivateCurrentPiece(false);
@@ -105,7 +106,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 
 		for (DominoPiece piece : table.getTablePieces()) {
 			gl.glPushMatrix();
-			gl.glScalef(0.65f, 0.65f, 0.65f);
+			gl.glScalef(DominoRenderer.tableScale, DominoRenderer.tableScale, DominoRenderer.tableScale);
 			piece.draw(gl);
 			gl.glPopMatrix();
 		}

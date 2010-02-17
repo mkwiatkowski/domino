@@ -73,9 +73,16 @@ public class DominoPiece {
 		}
 	}
 	
-	public boolean containsPoint(float x, float y) {
+	public boolean containsPointOnPlayerPieces(float x, float y) {
 		return x > position.getX()-halfPieceWidth && x < position.getX()+halfPieceWidth
 			&& y > position.getY()-halfPieceHeight && y < position.getY()+halfPieceHeight;
+	}
+
+	public boolean containsPointOnTable(float x, float y) {
+		return x > position.getX()-halfPieceWidth*DominoRenderer.tableScale
+			&& x < position.getX()+halfPieceWidth*DominoRenderer.tableScale
+			&& y > position.getY()-halfPieceHeight*DominoRenderer.tableScale
+			&& y < position.getY()+halfPieceHeight*DominoRenderer.tableScale;
 	}
 
 	public void activate() {
