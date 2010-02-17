@@ -35,16 +35,20 @@ public class Table {
 	}
 	
 	public void startGame() {
-		for (int i=1; i <= 7; i++) {
-			getRandomPieceForHuman();
+		try {
+			for (int i=1; i <= 7; i++) {
+				getRandomPieceForHuman();
+			}
+			for (int i=1; i <= 7; i++) {
+				getRandomPieceForComputer();
+			}
+			putRandomPieceOnTable();
+		} catch (NoPiecesLeftException e) {
+			;
 		}
-		for (int i=1; i <= 7; i++) {
-			getRandomPieceForComputer();
-		}
-		putRandomPieceOnTable();
 	}
 
-	public void putRandomPieceOnTable() {
+	public void putRandomPieceOnTable() throws NoPiecesLeftException {
 		int idx = getRandomPieceIndex();
 		DominoPiece piece = bankPieces.remove(idx);
 		tablePieces.add(piece);
@@ -74,22 +78,24 @@ public class Table {
 		return false;
 	}
 
-	public DominoPiece getRandomPieceForHuman() {
+	public DominoPiece getRandomPieceForHuman() throws NoPiecesLeftException {
 		int idx = getRandomPieceIndex();
 		DominoPiece piece = bankPieces.remove(idx);
 		humanPlayerPieces.add(piece);
 		return piece;
 	}
 
-	public DominoPiece getRandomPieceForComputer() {
+	public DominoPiece getRandomPieceForComputer() throws NoPiecesLeftException {
 		int idx = getRandomPieceIndex();
 		DominoPiece piece = bankPieces.remove(idx);
 		computerPlayerPieces.add(piece);
 		return piece;
 	}
 
-	private int getRandomPieceIndex() {
-		// TODO: check if there are any pieces left first!
+	private int getRandomPieceIndex() throws NoPiecesLeftException {
+		if (bankPieces.isEmpty()) {
+			throw new NoPiecesLeftException();
+		}
 		Random generator = new Random();
 		return generator.nextInt(bankPieces.size());
 	}

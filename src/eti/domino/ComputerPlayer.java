@@ -8,8 +8,12 @@ public class ComputerPlayer {
 			}
 		}
 		// No moves! Draw and try again.
-		while (!put(table, table.getRandomPieceForComputer())) {
-			;
+		try {
+			while (!put(table, table.getRandomPieceForComputer())) {
+				;
+			}
+		} catch (NoPiecesLeftException e) {
+			return false;
 		}
 		return true;
 	}
