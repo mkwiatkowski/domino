@@ -22,10 +22,9 @@ public class DominoPiece {
 		objects = new ArrayList<Object3D>();
         objects.add(cuboid);
         objects.add(new Bar(new RelativePosition(cuboid)));
-        addDots(cuboid, topDots, 0.11f);
-        addDots(cuboid, bottomDots, -0.11f);
+        createDots();
 	}
-	
+
 	public Position getPositionOnePieceHigher() {
 		return position.higher(halfPieceHeight * 2);
 	}
@@ -42,6 +41,13 @@ public class DominoPiece {
 	
 	public void setPosition(Position position) {
 		setPosition(position.getX(), position.getY(), position.getZ());
+	}
+
+	public void flip() {
+		int tmp = this.topDots;
+		this.topDots = this.bottomDots;
+		this.bottomDots = tmp;
+		recreateDots();
 	}
 	
 	public void draw(GL10 gl) {
@@ -76,6 +82,19 @@ public class DominoPiece {
 
 	public boolean fitsWith(int dots) {
 		return this.topDots == dots || this.bottomDots == dots;
+	}
+
+	private void recreateDots() {
+		while (objects.size() > 2) {
+			objects.remove(objects.size()-1);
+		}
+		createDots();
+	}
+
+	private void createDots() {
+		Object3D cuboid = this.objects.get(0);
+        addDots(cuboid, topDots, 0.11f);
+        addDots(cuboid, bottomDots, -0.11f);		
 	}
 
 	private void addDots(Object3D object, int number, float offset) {

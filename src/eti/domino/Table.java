@@ -52,6 +52,9 @@ public class Table {
 			if (piece.fitsWith(adjacentPiece.topDots)) {
 				movePieceToTable(piece);
 				piece.setPosition(adjacentPiece.getPositionOnePieceHigher());
+				if (piece.topDots == adjacentPiece.topDots) {
+					piece.flip();
+				}
 				return true;
 			}
 		}
