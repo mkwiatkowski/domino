@@ -67,6 +67,12 @@ public class DominoPiece {
 		}
 	}
 	
+	public void drawWithoutDots(GL10 gl) {
+		for (int i=0; i < 2; i++) {
+			objects.get(i).draw(gl);
+		}
+	}
+	
 	public boolean containsPoint(float x, float y) {
 		return x > position.getX()-halfPieceWidth && x < position.getX()+halfPieceWidth
 			&& y > position.getY()-halfPieceHeight && y < position.getY()+halfPieceHeight;

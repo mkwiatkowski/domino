@@ -119,10 +119,17 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 gl) {
 		clearScreen(gl);
 		setupCamera(gl);
+
 		layOutHumanPlayerPieces();
 		for (DominoPiece piece : table.getHumanPlayerPieces()) {
 			piece.draw(gl);
 		}
+
+		layOutComputerPieces();
+		for (DominoPiece piece : table.getComputerPlayerPieces()) {
+			piece.drawWithoutDots(gl);
+		}
+
 		for (DominoPiece piece : table.getTablePieces()) {
 			gl.glPushMatrix();
 			gl.glScalef(0.65f, 0.65f, 0.65f);
@@ -147,6 +154,15 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 			if (piece != currentPiece) {
 				piece.setPosition(x, -1.4f, 0);
 			}
+			x += 0.3f;
+			// TODO: make sure x < 1.2f
+		}
+	}
+	
+	private void layOutComputerPieces() {
+		float x=-1.04f;
+		for (DominoPiece piece : table.getComputerPlayerPieces()) {
+			piece.setPosition(x, 1.8f, 0);
 			x += 0.3f;
 			// TODO: make sure x < 1.2f
 		}
