@@ -1,8 +1,5 @@
 package eti.domino;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -12,11 +9,13 @@ import android.opengl.GLU;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
 	private Context context;
-	private ArrayList<DominoPiece> pieces;
+	private Table table;
 	private DominoPiece currentPiece;
 
 	public DominoRenderer(Context context) {
 		this.context = context;
+		table = new Table();
+		table.startGame();
 	}
 
 	private float xOnScreenToCoord(float x) {
@@ -36,9 +35,13 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void touch(float xOnScreen, float yOnScreen) {
 		float x = xOnScreenToCoord(xOnScreen);
 		float y = yOnScreenToCoord(yOnScreen);
-		for (DominoPiece piece : pieces) {
-			if (piece.containsPoint(x, y)) {
-				activatePiece(piece);
+		for (DominoPiece piece : table.getHumanPlayerPieces()) {
+			try {
+				if (piece.containsPoint(x, y)) {
+					activatePiece(piece);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -46,8 +49,12 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void release(float xOnScreen, float yOnScreen) {
 		float x = xOnScreenToCoord(xOnScreen);
 		float y = yOnScreenToCoord(yOnScreen);
-		if (currentPiece != null && !currentPiece.containsPoint(x, y)) {
-			deactivateCurrentPiece();
+		try {
+			if (currentPiece != null && !currentPiece.containsPoint(x, y)) {
+				deactivateCurrentPiece();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -58,17 +65,12 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 
 		gl.glClearColor(.5f, .5f, .5f, 1);
 
-		pieces = new ArrayList<DominoPiece>();
-		for (float x=-1.04f; x < 1.2f; x += 0.3f) {
-			pieces.add(randomPiece(new Position(x, -1.4f, 0)));
+		float x=-1.04f;
+		for (DominoPiece piece : table.getHumanPlayerPieces()) {
+			piece.show(new Position(x, -1.4f, 0));
+			x += 0.3f;
+			// TODO: make sure x < 1.2f
 		}
-	}
-
-	static private DominoPiece randomPiece(Position position) {
-		Random generator = new Random();
-		int top = generator.nextInt(7);
-		int bottom = generator.nextInt(7);
-		return new DominoPiece(position, top, bottom);
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
@@ -83,8 +85,12 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 gl) {
 		clearScreen(gl);
 		setupCamera(gl);
-		for (DominoPiece piece : pieces) {
-			piece.draw(gl);
+		for (DominoPiece piece : table.getHumanPlayerPieces()) {
+			try {
+				piece.draw(gl);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -98,14 +104,14 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		GLU.gluLookAt(gl, 0, 0, 5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 	}
 
-	private void deactivateCurrentPiece() {
+	private void deactivateCurrentPiece() throws Exception {
 		if (currentPiece != null) {
 			currentPiece.deactivate();
 			currentPiece = null;
 		}
 	}
-	
-	private void activatePiece(DominoPiece piece) {
+
+	private void activatePiece(DominoPiece piece) throws Exception {
 		deactivateCurrentPiece();
 		currentPiece = piece;
 		currentPiece.activate();

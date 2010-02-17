@@ -9,37 +9,58 @@ public class DominoPiece {
 	final private float halfPieceHeight = 0.24f;
 	final private float dotStep = halfPieceWidth / 2.2f;
 
+	private int topDots, bottomDots;
+	private boolean visible = false;
 	private Position position;
 	private ArrayList<Object3D> objects; 
 	
-	public DominoPiece(Position position, int top_dots, int bottom_dots) {
-		this.position = position;
+	public DominoPiece(int topDots, int bottomDots) {
+		this.topDots = topDots;
+		this.bottomDots = bottomDots;
+	}
+
+	public void show(Position position) {
 		Cuboid cuboid = new Cuboid(position);
 		objects = new ArrayList<Object3D>();
         objects.add(cuboid);
         objects.add(new Bar(new RelativePosition(cuboid)));
-        addDots(cuboid, top_dots, 0.11f);
-        addDots(cuboid, bottom_dots, -0.11f);
+        addDots(cuboid, topDots, 0.11f);
+        addDots(cuboid, bottomDots, -0.11f);
+
+		this.position = position;
+        this.visible = true;
 	}
-	
-	public void draw(GL10 gl) {
+
+	public void draw(GL10 gl) throws Exception {
+		if (!this.visible) {
+			throw new Exception("Tried to draw an invisible piece.");
+		}
 		for (Object3D object : objects) {
 			object.draw(gl);
 		}
 	}
 	
-	public boolean containsPoint(float x, float y) {
+	public boolean containsPoint(float x, float y) throws Exception {
+		if (!this.visible) {
+			throw new Exception("Tried to get points of an invisible piece.");
+		}
 		return x > position.getX()-halfPieceWidth && x < position.getX()+halfPieceWidth
 			&& y > position.getY()-halfPieceHeight && y < position.getY()+halfPieceHeight;
 	}
 
-	public void activate() {
+	public void activate() throws Exception {
+		if (!this.visible) {
+			throw new Exception("Tried to activate an invisible piece.");
+		}
 		for (Object3D object : objects) {
 			object.scaleTendency = "up";
 		}
 	}
-	
-	public void deactivate() {
+
+	public void deactivate() throws Exception {
+		if (!this.visible) {
+			throw new Exception("Tried to deactivate an invisible piece.");
+		}
 		for (Object3D object : objects) {
 			object.scaleTendency = "down";
 			object.rotationFrequency = 0;
