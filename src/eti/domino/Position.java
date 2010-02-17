@@ -11,6 +11,10 @@ public class Position {
 		this.z = z;
 	}
 	
+	public Position(Position position) {
+		this(position.getX(), position.getY(), position.getZ());
+	}
+	
 	public float getX() {
 		return x;
 	}

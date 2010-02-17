@@ -12,6 +12,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	private Context context;
 	private Table table;
 	private DominoPiece currentPiece;
+	private Position currentPieceOldPosition;
 
 	public DominoRenderer(Context context) {
 		this.context = context;
@@ -36,17 +37,21 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void touch(float xOnScreen, float yOnScreen) {
 		float x = xOnScreenToCoord(xOnScreen);
 		float y = yOnScreenToCoord(yOnScreen);
-		for (DominoPiece piece : table.getHumanPlayerPieces()) {
-			if (piece.containsPoint(x, y)) {
-				activatePiece(piece);
+		if (currentPiece == null) {
+			for (DominoPiece piece : table.getHumanPlayerPieces()) {
+				if (piece.containsPoint(x, y)) {
+					activatePiece(piece);
+				}
 			}
+		} else {
+			currentPiece.setPosition(x, y, 0);
 		}
 	}
 
 	public void release(float xOnScreen, float yOnScreen) {
 		float x = xOnScreenToCoord(xOnScreen);
 		float y = yOnScreenToCoord(yOnScreen);
-		if (currentPiece != null && !currentPiece.containsPoint(x, y)) {
+		if (currentPiece != null) {
 			deactivateCurrentPiece();
 		}
 	}
@@ -96,7 +101,9 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	private void layOutHumanPlayerPieces() {
 		float x=-1.04f;
 		for (DominoPiece piece : table.getHumanPlayerPieces()) {
-			piece.setPosition(x, -1.4f, 0);
+			if (piece != currentPiece) {
+				piece.setPosition(x, -1.4f, 0);
+			}
 			x += 0.3f;
 			// TODO: make sure x < 1.2f
 		}
@@ -104,6 +111,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 
 	private void deactivateCurrentPiece() {
 		if (currentPiece != null) {
+			currentPiece.setPosition(currentPieceOldPosition);
 			currentPiece.deactivate();
 			currentPiece = null;
 		}
@@ -112,6 +120,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	private void activatePiece(DominoPiece piece) {
 		deactivateCurrentPiece();
 		currentPiece = piece;
+		currentPieceOldPosition = currentPiece.getPositionCopy();
 		currentPiece.activate();
 	}
 }

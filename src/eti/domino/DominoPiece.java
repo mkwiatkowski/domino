@@ -30,6 +30,10 @@ public class DominoPiece {
 		return position.higher(halfPieceHeight * 2);
 	}
 	
+	public Position getPositionCopy() {
+		return new Position(position);
+	}
+
 	public void setPosition(float x, float y, float z) {
 		position.setX(x);
 		position.setY(y);
