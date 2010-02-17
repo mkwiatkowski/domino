@@ -12,7 +12,7 @@ public class DominoPiece {
 	private int topDots, bottomDots;
 	private Position position;
 	private ArrayList<Object3D> objects; 
-	
+
 	public DominoPiece(int topDots, int bottomDots) {
 		this.topDots = topDots;
 		this.bottomDots = bottomDots;
@@ -31,7 +31,7 @@ public class DominoPiece {
 		position.setY(y);
 		position.setZ(z);
 	}
-
+	
 	public void draw(GL10 gl) {
 		for (Object3D object : objects) {
 			object.draw(gl);
@@ -56,6 +56,12 @@ public class DominoPiece {
 		}
 	}
 	
+	public void tilt(int tilt) {
+		for (Object3D object : objects) {
+			object.setTilt(tilt);
+		}		
+	}
+
 	private void addDots(Object3D object, int number, float offset) {
 		switch (number) {
 		case 1:

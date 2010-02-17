@@ -75,6 +75,9 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		for (DominoPiece piece : table.getHumanPlayerPieces()) {
 			piece.draw(gl);
 		}
+		for (DominoPiece piece : table.getTablePieces()) {
+			piece.draw(gl);
+		}
 	}
 
 	private void clearScreen(GL10 gl) {

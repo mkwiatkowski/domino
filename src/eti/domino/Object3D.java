@@ -34,6 +34,10 @@ public class Object3D {
 	public float getScaleFactor() {
 		return scaleFactor;
 	}
+	
+	public void setTilt(int tilt) {
+		this.tilt = tilt;
+	}
 
 	private void scaleCorrection(GL10 gl) {
 		if (scaleTendency == "up") {

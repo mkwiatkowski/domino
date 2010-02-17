@@ -7,11 +7,13 @@ public class Table {
 	private ArrayList<DominoPiece> humanPlayerPieces;
 	private ArrayList<DominoPiece> computerPlayerPieces;
 	private ArrayList<DominoPiece> bankPieces;
+	private ArrayList<DominoPiece> tablePieces;
 
 	public Table() {
 		humanPlayerPieces = new ArrayList<DominoPiece>();
 		computerPlayerPieces = new ArrayList<DominoPiece>();
 		bankPieces = new ArrayList<DominoPiece>();
+		tablePieces = new ArrayList<DominoPiece>();
 
 		for (int top=0; top <= 6; top++) {
 			for (int bottom=top; bottom <= 6; bottom++) {
@@ -24,6 +26,10 @@ public class Table {
 		return humanPlayerPieces;
 	}
 
+	public ArrayList<DominoPiece> getTablePieces() {
+		return tablePieces;
+	}
+
 	public void startGame() {
 		for (int i=1; i <= 7; i++) {
 			getRandomPieceForHuman();
@@ -31,6 +37,13 @@ public class Table {
 		for (int i=1; i <= 7; i++) {
 			getRandomPieceForComputer();
 		}
+		putRandomPieceOnTable();
+	}
+	
+	public void putRandomPieceOnTable() {
+		int idx = getRandomPieceIndex();
+		DominoPiece piece = bankPieces.remove(idx);
+		tablePieces.add(piece);
 	}
 
 	public DominoPiece getRandomPieceForHuman() {
