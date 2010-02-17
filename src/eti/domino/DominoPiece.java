@@ -10,57 +10,46 @@ public class DominoPiece {
 	final private float dotStep = halfPieceWidth / 2.2f;
 
 	private int topDots, bottomDots;
-	private boolean visible = false;
 	private Position position;
 	private ArrayList<Object3D> objects; 
 	
 	public DominoPiece(int topDots, int bottomDots) {
 		this.topDots = topDots;
 		this.bottomDots = bottomDots;
-	}
+		this.position = new Position(0,0,0);
 
-	public void show(Position position) {
 		Cuboid cuboid = new Cuboid(position);
 		objects = new ArrayList<Object3D>();
         objects.add(cuboid);
         objects.add(new Bar(new RelativePosition(cuboid)));
         addDots(cuboid, topDots, 0.11f);
         addDots(cuboid, bottomDots, -0.11f);
-
-		this.position = position;
-        this.visible = true;
 	}
 
-	public void draw(GL10 gl) throws Exception {
-		if (!this.visible) {
-			throw new Exception("Tried to draw an invisible piece.");
-		}
+	public void setPosition(float x, float y, float z) {
+		position.setX(x);
+		position.setY(y);
+		position.setZ(z);
+	}
+
+	public void draw(GL10 gl) {
 		for (Object3D object : objects) {
 			object.draw(gl);
 		}
 	}
 	
-	public boolean containsPoint(float x, float y) throws Exception {
-		if (!this.visible) {
-			throw new Exception("Tried to get points of an invisible piece.");
-		}
+	public boolean containsPoint(float x, float y) {
 		return x > position.getX()-halfPieceWidth && x < position.getX()+halfPieceWidth
 			&& y > position.getY()-halfPieceHeight && y < position.getY()+halfPieceHeight;
 	}
 
-	public void activate() throws Exception {
-		if (!this.visible) {
-			throw new Exception("Tried to activate an invisible piece.");
-		}
+	public void activate() {
 		for (Object3D object : objects) {
 			object.scaleTendency = "up";
 		}
 	}
 
-	public void deactivate() throws Exception {
-		if (!this.visible) {
-			throw new Exception("Tried to deactivate an invisible piece.");
-		}
+	public void deactivate() {
 		for (Object3D object : objects) {
 			object.scaleTendency = "down";
 			object.rotationFrequency = 0;

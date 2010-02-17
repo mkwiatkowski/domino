@@ -8,6 +8,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
 public class DominoRenderer implements GLSurfaceView.Renderer {
+	@SuppressWarnings("unused")
 	private Context context;
 	private Table table;
 	private DominoPiece currentPiece;
@@ -36,12 +37,8 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		float x = xOnScreenToCoord(xOnScreen);
 		float y = yOnScreenToCoord(yOnScreen);
 		for (DominoPiece piece : table.getHumanPlayerPieces()) {
-			try {
-				if (piece.containsPoint(x, y)) {
-					activatePiece(piece);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (piece.containsPoint(x, y)) {
+				activatePiece(piece);
 			}
 		}
 	}
@@ -49,12 +46,8 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void release(float xOnScreen, float yOnScreen) {
 		float x = xOnScreenToCoord(xOnScreen);
 		float y = yOnScreenToCoord(yOnScreen);
-		try {
-			if (currentPiece != null && !currentPiece.containsPoint(x, y)) {
-				deactivateCurrentPiece();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (currentPiece != null && !currentPiece.containsPoint(x, y)) {
+			deactivateCurrentPiece();
 		}
 	}
 	
@@ -64,13 +57,6 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 
 		gl.glClearColor(.5f, .5f, .5f, 1);
-
-		float x=-1.04f;
-		for (DominoPiece piece : table.getHumanPlayerPieces()) {
-			piece.show(new Position(x, -1.4f, 0));
-			x += 0.3f;
-			// TODO: make sure x < 1.2f
-		}
 	}
 
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
@@ -85,12 +71,9 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 gl) {
 		clearScreen(gl);
 		setupCamera(gl);
+		layOutHumanPlayerPieces();
 		for (DominoPiece piece : table.getHumanPlayerPieces()) {
-			try {
-				piece.draw(gl);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			piece.draw(gl);
 		}
 	}
 
@@ -103,15 +86,24 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		gl.glLoadIdentity();
 		GLU.gluLookAt(gl, 0, 0, 5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 	}
+	
+	private void layOutHumanPlayerPieces() {
+		float x=-1.04f;
+		for (DominoPiece piece : table.getHumanPlayerPieces()) {
+			piece.setPosition(x, -1.4f, 0);
+			x += 0.3f;
+			// TODO: make sure x < 1.2f
+		}
+	}
 
-	private void deactivateCurrentPiece() throws Exception {
+	private void deactivateCurrentPiece() {
 		if (currentPiece != null) {
 			currentPiece.deactivate();
 			currentPiece = null;
 		}
 	}
 
-	private void activatePiece(DominoPiece piece) throws Exception {
+	private void activatePiece(DominoPiece piece) {
 		deactivateCurrentPiece();
 		currentPiece = piece;
 		currentPiece.activate();

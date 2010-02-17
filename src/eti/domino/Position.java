@@ -11,23 +11,27 @@ public class Position {
 		this.z = z;
 	}
 	
-	public Position higher(float by) {
-		return new Position(this.getX(), this.getY() + by, this.getZ());
-	}
-	
-	public Position shifted(float by) {
-		return new Position(this.getX() + by, this.getY(), this.getZ());
-	}
-
 	public float getX() {
 		return x;
+	}
+
+	public void setX(float x) {
+		this.x = x;
 	}
 
 	public float getY() {
 		return y;
 	}
 
+	public void setY(float y) {
+		this.y = y;
+	}
+
 	public float getZ() {
 		return z;
+	}
+
+	public void setZ(float z) {
+		this.z = z;
 	}
 }
