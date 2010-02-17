@@ -53,33 +53,6 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 			currentPiece.setPosition(x, y, 0);
 		}
 	}
-	
-	public void gameStep() {
-		if (table.computerHasWon()) {
-			// TODO show "lost" screen
-			Log.d(DominoRenderer.TAG, "You have lost!");
-		} else if (table.humanHasWon()) {
-			// TODO show "won" screen
-			Log.d(DominoRenderer.TAG, "You have won!");
-		}
-
-		// The piece has been placed by the user, now
-		// it's the computer turn.
-		boolean computerMoved = computerPlayer.move(table);
-		
-		if (!computerMoved && table.isTieWithNoComputerMoves()) {
-			Log.d(DominoRenderer.TAG, "Tie!");
-		}
-
-		// Check if the player has a move, otherwise draw
-		// pieces for him.
-		try {
-			table.drawPiecesForPlayerIfNeeded();
-		} catch (NoPiecesLeftException e) {
-			// No moves for the player, let the computer play.
-			gameStep();
-		}
-	}
 
 	public void release(float xOnScreen, float yOnScreen) {
 		float x = xOnScreenToCoord(xOnScreen);
@@ -191,6 +164,33 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		Log.d(DominoRenderer.TAG, "PIECES ON TABLE");
 		for (DominoPiece piece : table.getTablePieces()) {
 			Log.d(DominoRenderer.TAG, piece.toString());		
+		}
+	}
+	
+	private void gameStep() {
+		if (table.computerHasWon()) {
+			// TODO show "lost" screen
+			Log.d(DominoRenderer.TAG, "You have lost!");
+		} else if (table.humanHasWon()) {
+			// TODO show "won" screen
+			Log.d(DominoRenderer.TAG, "You have won!");
+		}
+
+		// The piece has been placed by the user, now
+		// it's the computer turn.
+		boolean computerMoved = computerPlayer.move(table);
+		
+		if (!computerMoved && table.isTieWithNoComputerMoves()) {
+			Log.d(DominoRenderer.TAG, "Tie!");
+		}
+
+		// Check if the player has a move, otherwise draw
+		// pieces for him.
+		try {
+			table.drawPiecesForPlayerIfNeeded();
+		} catch (NoPiecesLeftException e) {
+			// No moves for the player, let the computer play.
+			gameStep();
 		}
 	}
 }
