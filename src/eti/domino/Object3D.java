@@ -34,20 +34,14 @@ public class Object3D {
 	public float getScaleFactor() {
 		return scaleFactor;
 	}
-	
+
 	public void setTilt(int tilt) {
 		this.tilt = tilt;
 	}
 
 	private void scaleCorrection(GL10 gl) {
-		if (scaleTendency == "up") {
-			if (scaleFactor < maxScaleUp) {
-				scaleFactor += 0.1;
-			} else if (rotationFrequency == 0) {
-				// Start rotating once it has been made bigger.
-				rotationFrequency = 0.5f;
-				rotationStart = SystemClock.uptimeMillis();
-			}
+		if (scaleTendency == "up" && scaleFactor < maxScaleUp) {
+			scaleFactor += 0.1;
 		} else if (scaleTendency == "down" && scaleFactor > 1.0) {
 			scaleFactor -= 0.1;
 		}

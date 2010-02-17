@@ -76,7 +76,10 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 			piece.draw(gl);
 		}
 		for (DominoPiece piece : table.getTablePieces()) {
+			gl.glPushMatrix();
+			gl.glScalef(0.65f, 0.65f, 0.65f);
 			piece.draw(gl);
+			gl.glPopMatrix();
 		}
 	}
 
