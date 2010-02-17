@@ -10,7 +10,9 @@ import android.opengl.GLU;
 public class DominoRenderer implements GLSurfaceView.Renderer {
 	@SuppressWarnings("unused")
 	private Context context;
+
 	private Table table;
+	private ComputerPlayer computerPlayer;
 	private DominoPiece currentPiece;
 	private Position currentPieceOldPosition;
 
@@ -18,6 +20,7 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 		this.context = context;
 		table = new Table();
 		table.startGame();
+		computerPlayer = new ComputerPlayer();
 	}
 
 	private float xOnScreenToCoord(float x) {
@@ -56,6 +59,11 @@ public class DominoRenderer implements GLSurfaceView.Renderer {
 				if (piece.containsPoint(x, y)) {
 					if (table.putPieceOnTable(currentPiece, piece)) {
 						deactivateCurrentPiece(false);
+						// TODO: check if that was the last one.
+
+						// The piece has been placed by the user, now
+						// it's the computer turn.
+						computerPlayer.move(table);
 						return;
 					}
 				}

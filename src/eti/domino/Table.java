@@ -26,10 +26,14 @@ public class Table {
 		return humanPlayerPieces;
 	}
 
+	public ArrayList<DominoPiece> getComputerPlayerPieces() {
+		return computerPlayerPieces;
+	}
+
 	public ArrayList<DominoPiece> getTablePieces() {
 		return tablePieces;
 	}
-
+	
 	public void startGame() {
 		for (int i=1; i <= 7; i++) {
 			getRandomPieceForHuman();
