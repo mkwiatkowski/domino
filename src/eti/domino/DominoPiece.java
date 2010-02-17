@@ -13,12 +13,13 @@ public class DominoPiece {
 	private ArrayList<Object3D> objects; 
 	
 	public DominoPiece(Position position, int top_dots, int bottom_dots) {
-		this.position = position;		
+		this.position = position;
+		Cuboid cuboid = new Cuboid(position);
 		objects = new ArrayList<Object3D>();
-        objects.add(new Cuboid(position));
-        objects.add(new Bar(position));
-        addDots(top_dots, 0.12f);
-        addDots(bottom_dots, -0.12f);
+        objects.add(cuboid);
+        objects.add(new Bar(new RelativePosition(cuboid)));
+        addDots(cuboid, top_dots, 0.12f);
+        addDots(cuboid, bottom_dots, -0.12f);
 	}
 	
 	public void draw(GL10 gl) {
@@ -28,8 +29,8 @@ public class DominoPiece {
 	}
 	
 	public boolean containsPoint(float x, float y) {
-		return x > position.x-halfPieceWidth && x < position.x+halfPieceWidth
-			&& y > position.y-halfPieceHeight && y < position.y+halfPieceHeight;
+		return x > position.getX()-halfPieceWidth && x < position.getX()+halfPieceWidth
+			&& y > position.getY()-halfPieceHeight && y < position.getY()+halfPieceHeight;
 	}
 
 	public void activate() {
@@ -45,46 +46,46 @@ public class DominoPiece {
 		}
 	}
 	
-	private void addDots(int number, float offset) {
+	private void addDots(Object3D object, int number, float offset) {
 		switch (number) {
 		case 1:
-			addDots1(offset);
+			addDots1(object, offset);
 			break;
 		case 3:
-			addDots1(offset);
-			addDots2(offset);
+			addDots1(object, offset);
+			addDots2(object, offset);
 			break;
 		case 2:
-			addDots2(offset);
+			addDots2(object, offset);
 			break;
 		case 5:
-			addDots1(offset);
-			addDots4(offset);		
+			addDots1(object, offset);
+			addDots4(object, offset);		
 			break;
 		case 4:
-			addDots4(offset);
+			addDots4(object, offset);
 			break;
 		case 6:
-			addDots4(offset);
-			objects.add(new Circle(position.higher(offset).shifted(dotStep)));
-			objects.add(new Circle(position.higher(offset).shifted(-dotStep)));
+			addDots4(object, offset);
+			objects.add(new Circle(new RelativePosition(object, dotStep, offset, 0)));
+			objects.add(new Circle(new RelativePosition(object, -dotStep, offset, 0)));
 			break;
 		}
 	}
 	
-	private void addDots1(float offset) {
-		objects.add(new Circle(position.higher(offset)));
+	private void addDots1(Object3D object, float offset) {
+		objects.add(new Circle(new RelativePosition(object, 0, offset, 0)));
 	}
 	
-	private void addDots2(float offset) {
-		objects.add(new Circle(position.higher(offset + dotStep).shifted(-dotStep)));
-		objects.add(new Circle(position.higher(offset - dotStep).shifted(dotStep)));
+	private void addDots2(Object3D object, float offset) {
+		objects.add(new Circle(new RelativePosition(object, -dotStep, offset + dotStep, 0)));
+		objects.add(new Circle(new RelativePosition(object, dotStep, offset - dotStep, 0)));
 	}
 	
-	private void addDots4(float offset) {
-		objects.add(new Circle(position.higher(offset + dotStep).shifted(-dotStep)));
-		objects.add(new Circle(position.higher(offset + dotStep).shifted(dotStep)));
-		objects.add(new Circle(position.higher(offset - dotStep).shifted(-dotStep)));
-		objects.add(new Circle(position.higher(offset - dotStep).shifted(dotStep)));	
+	private void addDots4(Object3D object, float offset) {
+		objects.add(new Circle(new RelativePosition(object, -dotStep, offset + dotStep, 0)));
+		objects.add(new Circle(new RelativePosition(object, dotStep, offset + dotStep, 0)));
+		objects.add(new Circle(new RelativePosition(object, -dotStep, offset - dotStep, 0)));
+		objects.add(new Circle(new RelativePosition(object, dotStep, offset - dotStep, 0)));
 	}
 }

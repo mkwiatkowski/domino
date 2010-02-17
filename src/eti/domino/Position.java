@@ -1,9 +1,9 @@
 package eti.domino;
 
 public class Position {
-	public float x;
-	public float y;
-	public float z;
+	protected float x;
+	protected float y;
+	protected float z;
 
 	public Position(float x, float y, float z) {
 		this.x = x;
@@ -12,10 +12,22 @@ public class Position {
 	}
 	
 	public Position higher(float by) {
-		return new Position(this.x, this.y + by, this.z);
+		return new Position(this.getX(), this.getY() + by, this.getZ());
 	}
 	
 	public Position shifted(float by) {
-		return new Position(this.x + by, this.y, this.z);
+		return new Position(this.getX() + by, this.getY(), this.getZ());
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public float getZ() {
+		return z;
 	}
 }

@@ -12,7 +12,7 @@ public class Object3D {
 	private float maxScaleUp = 1.5f;
 	private float scaleFactor = 1.0f;
 	protected String scaleTendency = "down";
-
+	
 	public Object3D(Position position) {
 		this.position = position;
 	}
@@ -31,6 +31,10 @@ public class Object3D {
 		gl.glPopMatrix();
 	}
 
+	public float getScaleFactor() {
+		return scaleFactor;
+	}
+
 	private void scaleCorrection(GL10 gl) {
 		if (scaleTendency == "up") {
 			if (scaleFactor < maxScaleUp) {
@@ -47,7 +51,7 @@ public class Object3D {
 	}
 
 	private void positionCorrection(GL10 gl) {
-		gl.glTranslatef(position.x, position.y, position.z);
+		gl.glTranslatef(position.getX(), position.getY(), position.getZ());
 	}
 
 	private void tiltCorrection(GL10 gl) {
