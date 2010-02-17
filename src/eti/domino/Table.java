@@ -55,6 +55,8 @@ public class Table {
 				if (piece.topDots == adjacentPiece.topDots) {
 					piece.flip();
 				}
+				adjacentPiece.topFree = false;
+				piece.bottomFree = false;
 				return true;
 			} else if (piece.fitsWith(adjacentPiece.bottomDots)) {
 				movePieceToTable(piece);
@@ -62,6 +64,8 @@ public class Table {
 				if (piece.bottomDots == adjacentPiece.bottomDots) {
 					piece.flip();
 				}
+				adjacentPiece.bottomFree = false;
+				piece.topFree = false;
 				return true;				
 			}
 		}

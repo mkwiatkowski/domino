@@ -11,12 +11,15 @@ public class DominoPiece {
 	final private float tablePieceDistance = 0.43f;
 
 	public int topDots, bottomDots;
+	public boolean topFree, bottomFree;
 	private Position position;
 	private ArrayList<Object3D> objects; 
 
 	public DominoPiece(int topDots, int bottomDots) {
 		this.topDots = topDots;
 		this.bottomDots = bottomDots;
+		this.topFree = true;
+		this.bottomFree = true;
 		this.position = new Position(0,0,0);
 
 		Cuboid cuboid = new Cuboid(position);
@@ -52,6 +55,9 @@ public class DominoPiece {
 		int tmp = this.topDots;
 		this.topDots = this.bottomDots;
 		this.bottomDots = tmp;
+		boolean tmp2 = this.topFree;
+		this.topFree = this.bottomFree;
+		this.bottomFree = tmp2;
 		recreateDots();
 	}
 	
@@ -86,7 +92,7 @@ public class DominoPiece {
 	}
 
 	public boolean fitsWith(int dots) {
-		return this.topDots == dots || this.bottomDots == dots;
+		return (this.topDots == dots && this.topFree) || (this.bottomDots == dots && this.bottomFree);
 	}
 
 	private void recreateDots() {
