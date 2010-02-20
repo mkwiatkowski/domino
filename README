@@ -1,0 +1,35 @@
+This is a classic game of dominoes where you play against a computer player for the Android platform. Domino pieces and game state is working OK, but there are more than a few things missing.
+
+First, it's not very pretty. It's in OpenGL, although the perspective is fixed and not very appealing.
+
+I couldn't get culling to work properly. I probably specified normals for the polygons in a wrong way.
+
+There's no lightning, but here's a snippet that should get you started.
+
+    final float lightAmb[]= { 0.5f, 0.5f, 0.5f, 1.0f };
+    final float lightDif[]= { 1.0f, 1.0f, 1.0f, 1.0f };
+    final float lightPos[]= { 0.0f, 0.0f, 2.0f, 1.0f };
+    final FloatBuffer lightAmbBfr;
+    final FloatBuffer lightDifBfr;
+    final FloatBuffer lightPosBfr;
+    lightAmbBfr = FloatBuffer.wrap(lightAmb);
+    lightDifBfr = FloatBuffer.wrap(lightDif);
+    lightPosBfr = FloatBuffer.wrap(lightPos);
+    gl.glEnable(GL10.GL_LIGHT0);
+    gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbBfr);
+    gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDifBfr);
+    gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosBfr);
+
+It didn't work for me though.
+
+Screen to 3D coordinates are not very precise.
+
+Dominoes should be laid down so they use space more efficiently. Right now they just go up and down.
+
+There's no start screen or an end game message.
+
+I've run it only on an emulator, so I'm not sure about the efficiency on an actual device.
+
+Anyway, this should be a nice starting point if you want you try out OpenGL ES. Feel free to take the code and do whatever you like with it. Also check out http://code.google.com/p/nehe-android/ which should give you an idea on how other OpenGL features work on Android.
+
+I've used Eclipse 3.5 (Galileo) with the ADT plugin under Ubuntu 9.10 (Karmic) for development.
